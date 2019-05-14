@@ -1,0 +1,7 @@
+{
+	"name"			: "biotracs-m-lipidmatch",
+    "description"    : "Biotracs application (wrapper of LipidMatch software) for the identification lipids",
+	"dependencies"	: [
+		"biotracs-m-mzconvert"
+		]
+}
