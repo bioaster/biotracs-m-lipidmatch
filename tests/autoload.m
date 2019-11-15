@@ -50,7 +50,7 @@ function autoload( varargin )
             end
         end
     end
-    
+
     % Set environment variables
     biotracs.core.env.Env.depPaths(depPaths);
     
@@ -60,6 +60,7 @@ function autoload( varargin )
             depVars.(f{i}) = p.Results.Variables.(f{i});
         end
     end
+
     biotracs.core.env.Env.vars( depVars );
 
     depNames = cell(size(depPaths));
@@ -88,9 +89,10 @@ function autoload( varargin )
     end    
 end
 
-function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iExceptions, iDepVars )
+function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iExceptions )
     oDepPaths = {};
     foundDeps = {};
+    oDepVars = struct();
     if isempty(iDeps)
         return;
     end
@@ -99,11 +101,11 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
         iExceptions = {};
     end
     
-    if nargin <= 3
-        oDepVars = struct();
-    else
-        oDepVars = iDepVars;
-    end
+%     if nargin <= 3
+%         oDepVars = struct();
+%     else
+%         oDepVars = iDepVars;
+%     end
     
     isRelativeDir = ~cellfun(@isempty,  regexp(iRootPaths, '^\.', 'once'));
     if isRelativeDir
@@ -124,6 +126,7 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                 
                 %search 'package.json' file
                 appFile = fullfile(depPath, 'package.json');
+                
                 if exist(appFile, 'file') == 2
                     
                     try
@@ -134,11 +137,11 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                     
                     if isfield(data, 'variables')
                         f = fieldnames(data.variables);
-                        for kk=1:length(f)
+                        for kk=1:length(data.variables)
                             oDepVars.(f{kk}) = data.variables.(f{kk});
                         end
                     end
-                    
+
                     if isfield(data, 'dependencies')
                         subDeps = {};
                         for k=1:length(data.dependencies)
@@ -147,14 +150,20 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                                 subDeps{end+1} = data.dependencies{k}; %#ok<AGROW>
                             end
                         end
-
-                        oDepPaths = [...
-                            oDepPaths, ...
-                            createDepPaths( iRootPaths, subDeps, foundDeps, oDepVars ) ...
-                            ]; %#ok<AGROW>
+                        
+                        [ dPaths, dVars ] = createDepPaths( iRootPaths, subDeps, foundDeps );
+                        
+                        %concatenation of dependency paths
+                        oDepPaths = [ oDepPaths, dPaths ]; %#ok<AGROW>
+                        
+                        %concatenation of dependency variables                        
+                        f = fieldnames(dVars);
+                        
+                        for kk=1:length(f)
+                            oDepVars.(f{kk}) = dVars.(f{kk});
+                        end
                     end
 
-                    
                 end
             end
         end
@@ -179,13 +188,13 @@ function loadDep( iDep, iVerbose )
 
             %check if the module contains an 'externs' subdirectory
             externDir = fullfile(moduleDir, 'externs/matlab');
-            if exist( externDir, 'dir' )
+            if exist( externDir, 'dir' ) == 7
                 loadRecursive( externDir );
             end
 
             %check if the module contains an 'backcomp' subdirectory
             backcompDir = fullfile(moduleDir, 'backcomp');
-            if exist( externDir, 'dir' )
+            if exist( backcompDir, 'dir' ) == 7
                 loadBackcomp( backcompDir );
             end
         else
@@ -203,15 +212,15 @@ function loadRecursive( moduleDir )
 end
 
 % Load backward compatibility paths
-function loadBackcomp( moduleDir )
-    list = subdir(moduleDir);
+function loadBackcomp( backcompDir )
+    list = subdir(backcompDir);
     p = arrayfun( @(x)(fullfile(x.folder, x.name)), list, 'UniformOutput', false);
-                    
+
     currentVer = strcat('R',version('-release'));
     for j=1:length(p)
         folderVer = regexprep(p{j}, '.*(R\d+\w)([/\\\.]+)?$', '$1');
         list = sort({currentVer, folderVer});
-        isFolderVersionNewerThanCurrentVersion = strcmp(list{2}, folderVer);
+        isFolderVersionNewerThanCurrentVersion = strcmp(list{2}, folderVer);     
         if isFolderVersionNewerThanCurrentVersion
             addpath( p{j} );
         end

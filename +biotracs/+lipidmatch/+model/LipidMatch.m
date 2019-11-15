@@ -119,6 +119,24 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
            n=1;
         end
         
+        function [listOfCmd, outputDataFilePaths, nbOut ] = doPrepareCommand (this)
+            nbOut = this.doComputeNbCmdToPrepare();
+            outputDataFilePaths = cell(1,nbOut);
+            listOfCmd = cell(1,nbOut);
+            for i=1:nbOut
+                % -- prepare file paths
+                [  outputDataFilePaths{i} ] = this.doPrepareInputAndOutputFilePaths( i );
+                % -- config file export
+                if this.config.getParamValue('UseShellConfigFile')
+                    this.doUpdateConfigFilePath();
+                    this.exportConfig( this.config.getParamValue('ShellConfigFilePath'), 'Mode', 'Shell' );
+                end
+                % -- exec
+                [ listOfCmd{i} ] = this.doBuildCommand();
+            end
+            %nbOut = length(listOfCmd);
+        end
+        
         function [ mergeIDFile ] = doMergePosAndNegId(this, outputDataFilePaths,outputFileName )
             posIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName , 'Output/', 'PosIDed.csv'));
             posIDFile = biotracs.data.model.DataTable.import(posIDFilePath{1});
