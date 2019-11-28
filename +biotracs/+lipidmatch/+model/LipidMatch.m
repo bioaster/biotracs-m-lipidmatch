@@ -138,13 +138,13 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
         end
         
         function [ mergeIDFile ] = doMergePosAndNegId(this, outputDataFilePaths,outputFileName )
-            posIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName , '/Output/', 'PosIDed.csv'));
+            posIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName , 'Output/', 'PosIDed.csv'));
             posIDFile = biotracs.data.model.DataTable.import(posIDFilePath{1});
-            negIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName ,  '/Output/', 'NegIDed.csv'));
+            negIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName ,  'Output/', 'NegIDed.csv'));
             negIDFile = biotracs.data.model.DataTable.import(negIDFilePath{1});
             outputDirectoryPath = this.config.getParamValue('WorkingDirectory');
             mergeIDFile = vertmerge(posIDFile, negIDFile);
-            workingDir = fullfile(strcat(outputDirectoryPath,'/../', outputFileName, '/Output/'));
+            workingDir = fullfile(strcat(outputDirectoryPath,'/../', outputFileName, 'Output/'));
             mz = mergeIDFile.getDataByColumnName('^MzSearchedPrecursor$');
             rt = mergeIDFile.getDataByColumnName('^RtSearchedPrecursor$');
             pol = mergeIDFile.getDataByColumnName('^Polarity$');
@@ -152,9 +152,26 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
             newRowName = strcat('M', mz, '_T', rt, '_', pol);
             mergeIDFile = mergeIDFile.setRowNames(newRowName);
             
-            mergeIDFile.export(fullfile(workingDir{1} ,  'NegPosIDed.csv'));
+            mergeIDFile.export(fullfile(workingDir{1} ,  '\NegPosIDed.csv'));
         end
         
+        function [listOfCmd, outputDataFilePaths, nbOut ] = doPrepareCommand (this)
+            nbOut = this.doComputeNbCmdToPrepare();
+            outputDataFilePaths = cell(1,nbOut);
+            listOfCmd = cell(1,nbOut);
+            for i=1:nbOut
+                % -- prepare file paths
+                [  outputDataFilePaths{i} ] = this.doPrepareInputAndOutputFilePaths( i );
+                % -- config file export
+                if this.config.getParamValue('UseShellConfigFile')
+                    this.doUpdateConfigFilePath();
+                    this.exportConfig( this.config.getParamValue('ShellConfigFilePath'), 'Mode', 'Shell' );
+                end
+                % -- exec
+                [ listOfCmd{i} ] = this.doBuildCommand();
+            end
+            %nbOut = length(listOfCmd);
+        end
         
         function doRun( this )
             [listOfCmd, outputDataFilePaths, nbOut] = this.doPrepareCommand(); 
