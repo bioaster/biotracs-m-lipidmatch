@@ -136,7 +136,7 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
             end
             %nbOut = length(listOfCmd);
         end
-        
+
         function [ mergeIDFile ] = doMergePosAndNegId(this, outputDataFilePaths,outputFileName )
             posIDFilePath = fullfile(strcat(outputDataFilePaths,'../', outputFileName , 'Output/', 'PosIDed.csv'));
             posIDFile = biotracs.data.model.DataTable.import(posIDFilePath{1});
@@ -155,26 +155,11 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
             mergeIDFile.export(fullfile(workingDir{1} ,  '\NegPosIDed.csv'));
         end
         
-        function [listOfCmd, outputDataFilePaths, nbOut ] = doPrepareCommand (this)
-            nbOut = this.doComputeNbCmdToPrepare();
-            outputDataFilePaths = cell(1,nbOut);
-            listOfCmd = cell(1,nbOut);
-            for i=1:nbOut
-                % -- prepare file paths
-                [  outputDataFilePaths{i} ] = this.doPrepareInputAndOutputFilePaths( i );
-                % -- config file export
-                if this.config.getParamValue('UseShellConfigFile')
-                    this.doUpdateConfigFilePath();
-                    this.exportConfig( this.config.getParamValue('ShellConfigFilePath'), 'Mode', 'Shell' );
-                end
-                % -- exec
-                [ listOfCmd{i} ] = this.doBuildCommand();
-            end
-            %nbOut = length(listOfCmd);
-        end
+        
         
         function doRun( this )
             [listOfCmd, outputDataFilePaths, nbOut] = this.doPrepareCommand(); 
+
             nbCmd = length(listOfCmd);
             cmdout = cell(1,nbOut);
             outputFileName = cell(1,nbOut);

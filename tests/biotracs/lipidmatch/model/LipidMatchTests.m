@@ -9,7 +9,6 @@ classdef LipidMatchTests < matlab.unittest.TestCase
     
     methods (Test)
         
-        
         function testLipidMatch(testCase)
             feature= biotracs.data.model.DataTable.import('../../../testdata/features_new.csv', 'ReadRowNames', false);
             ms2pos = biotracs.data.model.DataFile(fullfile(pwd, '../../../testdata/ms2Pos/'));
