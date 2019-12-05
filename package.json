@@ -3,10 +3,5 @@
     "description"    : "Biotracs application (wrapper of LipidMatch software) for the identification lipids",
 	"dependencies"	: [
 		"biotracs-m-mzconvert"
-		],
-	"variables": {
-        "RExecutableFilePath": "C:/Program Files/R/R-3.3.3/bin/Rscript.exe",
-        "LipidMatchFilePath": "%BIOTRACS_M_LIPIDMATCH_DIR%-externs/LipidMatch/v2/LipidMatch_v4.R",
-        "LipidMatchLibraryPath": "%BIOTRACS_M_LIPIDMATCH_DIR%-externs/LipidMatch/v2/LipidMatch_Libraries_acetate"
-    }
+		]
 }

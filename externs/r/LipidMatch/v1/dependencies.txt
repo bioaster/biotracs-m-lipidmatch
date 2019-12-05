@@ -1,6 +1,0 @@
-installr
-stringr 
-sqldf
-gWidgets
-gWidgetstcltk
-compiler
