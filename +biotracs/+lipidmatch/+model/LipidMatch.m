@@ -155,7 +155,7 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
             mergeIDFile.export(fullfile(workingDir{1} ,  '\NegPosIDed.csv'));
         end
         
-        function [listOfCmd, outputDataFilePaths, nbOut ] = doPrepareCommand (this)
+        function [listOfCmd, outputDataFilePaths, nbOut ] = this.doPrepareCommand (this)
             nbOut = this.doComputeNbCmdToPrepare();
             outputDataFilePaths = cell(1,nbOut);
             listOfCmd = cell(1,nbOut);
