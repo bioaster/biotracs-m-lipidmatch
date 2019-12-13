@@ -15,6 +15,7 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
         
         % Constructor
         function this = LipidMatch()
+            %#function biotracs.lipidmatch.model.LipidMatchConfig biotracs.data.model.DataTable biotracs.data.model.DataFileSet
             this@biotracs.core.shell.model.Shell();
             this.configType = 'biotracs.lipidmatch.model.LipidMatchConfig';
             
@@ -153,24 +154,6 @@ classdef LipidMatch < biotracs.core.shell.model.Shell
             mergeIDFile = mergeIDFile.setRowNames(newRowName);
             
             mergeIDFile.export(fullfile(workingDir{1} ,  '\NegPosIDed.csv'));
-        end
-        
-        function [listOfCmd, outputDataFilePaths, nbOut ] = doPrepareCommand (this)
-            nbOut = this.doComputeNbCmdToPrepare();
-            outputDataFilePaths = cell(1,nbOut);
-            listOfCmd = cell(1,nbOut);
-            for i=1:nbOut
-                % -- prepare file paths
-                [  outputDataFilePaths{i} ] = this.doPrepareInputAndOutputFilePaths( i );
-                % -- config file export
-                if this.config.getParamValue('UseShellConfigFile')
-                    this.doUpdateConfigFilePath();
-                    this.exportConfig( this.config.getParamValue('ShellConfigFilePath'), 'Mode', 'Shell' );
-                end
-                % -- exec
-                [ listOfCmd{i} ] = this.doBuildCommand();
-            end
-            %nbOut = length(listOfCmd);
         end
         
         function doRun( this )
