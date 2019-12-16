@@ -53,7 +53,8 @@ ManuallyInputVariables <- TRUE
 #Checks for updates, installs packagaes: "installr" "stringr" "sqldf" "gWidgets" "gWidgetstcltk" and "compiler"
 # if(!require(installr)) {
 #   install.packages("installr"); install.packages("stringr"); require(installr)}
-if (!requireNamespace("BiocManager", quietly=TRUE)) { install.packages("BiocManager")}
+if (!requireNamespace("BiocManager", quietly=TRUE)) { install.packages("BiocManager", repo="https://cloud.r-project.org/")}
+BiocManager::install()
 
 if("installr" %in% rownames(installed.packages()) == FALSE){BiocManager::install("installr")}
 library(installr)
@@ -63,18 +64,18 @@ library(installr)
 # if("gWidgets" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgets")}
 # if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgetstcltk")}
 if("gWidgets" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgets")}
-
 require(gWidgets)
-if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgetstcltk")}
 
+if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgetstcltk")}
 require(gWidgetstcltk)
 options(guiToolkit="tcltk") 
+
 if("compiler" %in% rownames(installed.packages()) == FALSE){BiocManager::install("compiler")}
-
 library(compiler)
-if("sqldf" %in% rownames(installed.packages()) == FALSE){BiocManager::install("sqldf")}
 
+if("sqldf" %in% rownames(installed.packages()) == FALSE){BiocManager::install("sqldf")}
 library(sqldf)
+
 # options(warn=-1)#suppress warning on
 
 # errorBox <- function(message) {
