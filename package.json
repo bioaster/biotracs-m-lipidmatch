@@ -5,7 +5,7 @@
 		"biotracs-m-mzconvert"
 		],
 	"variables" : {
-		"RExecutableFilePath" : "%USER_DIR%/Documents/R/R-3.3.3/bin/Rscript.exe",
+		"RExecutableFilePath" : "C:/Program Files/R/R-3.3.3/bin/Rscript.exe",
 		"LipidMatchFilePath" : "%BIOTRACS_M_LIPIDMATCH_DIR%/externs/r/LipidMatch/LipidMatch_v4.R",
 		"LipidMatchLibraryPath": "%BIOTRACS_M_LIPIDMATCH_DIR%/externs/r/LipidMatch/LipidMatch_Libraries_acetate"
 	}
