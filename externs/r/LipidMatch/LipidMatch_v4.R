@@ -51,30 +51,36 @@ ManuallyInputVariables <- TRUE
 
 
 #Checks for updates, installs packagaes: "installr" "stringr" "sqldf" "gWidgets" "gWidgetstcltk" and "compiler"
-# if(!require(installr)) {
-#   install.packages("installr"); install.packages("stringr"); require(installr)}
-if (!requireNamespace("BiocManager", quietly=TRUE)) { install.packages("BiocManager")}
 
-if("installr" %in% rownames(installed.packages()) == FALSE){BiocManager::install("installr")}
+if(!require(installr)) {
+   install.packages("installr", repo="https://cloud.r-project.org/"); 
+   install.packages("stringr", repo="https://cloud.r-project.org/"); 
+   require("installr");
+}
+
+if("sqldf" %in% rownames(installed.packages()) == FALSE) {install.packages("sqldf", repo="https://cloud.r-project.org/")}
+if("compiler" %in% rownames(installed.packages()) == FALSE) {install.packages("compiler", repo="https://cloud.r-project.org/")}
+if("gWidgets" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgets", repo="https://cloud.r-project.org/")}
+if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgetstcltk", repo="https://cloud.r-project.org/")}
+if("optparse" %in% rownames(installed.packages()) == FALSE){install.packages("optparse", repo="https://cloud.r-project.org/")}
+
+#if (!requireNamespace("BiocManager", quietly=TRUE)) { install.packages("BiocManager", repo="https://cloud.r-project.org/")}
+#BiocManager::install()
+#if("installr" %in% rownames(installed.packages()) == FALSE){BiocManager::install("installr")}
+#if("gWidgets" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgets")}
+#if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgetstcltk")}
+#if("compiler" %in% rownames(installed.packages()) == FALSE){BiocManager::install("compiler")}
+#if("sqldf" %in% rownames(installed.packages()) == FALSE){BiocManager::install("sqldf")}
+#if("optparse" %in% rownames(installed.packages()) == FALSE){BiocManager::install("optparse")}
+
+library("optparse")
 library(installr)
-
-# if("sqldf" %in% rownames(installed.packages()) == FALSE) {install.packages("sqldf")}
-# if("compiler" %in% rownames(installed.packages()) == FALSE) {install.packages("compiler")}
-# if("gWidgets" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgets")}
-# if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE) {install.packages("gWidgetstcltk")}
-if("gWidgets" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgets")}
-
 require(gWidgets)
-if("gWidgetstcltk" %in% rownames(installed.packages()) == FALSE){BiocManager::install("gWidgetstcltk")}
-
 require(gWidgetstcltk)
-options(guiToolkit="tcltk") 
-if("compiler" %in% rownames(installed.packages()) == FALSE){BiocManager::install("compiler")}
-
+options(guiToolkit="tcltk")
 library(compiler)
-if("sqldf" %in% rownames(installed.packages()) == FALSE){BiocManager::install("sqldf")}
-
 library(sqldf)
+
 # options(warn=-1)#suppress warning on
 
 # errorBox <- function(message) {
@@ -93,10 +99,6 @@ library(sqldf)
 #   return()
 # }
 # Code to pass arguments in a shell
-if("optparse" %in% rownames(installed.packages()) == FALSE){BiocManager::install("optparse")}
-
-library("optparse")
-
 option_list = list(
   make_option(c("-r", "--RT_Window"), type="numeric", default=.2, 
               help="Retention Time plus or minus", metavar="numeric"),
